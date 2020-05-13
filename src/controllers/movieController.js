@@ -1,4 +1,5 @@
 const Movie = require('../models/Movie')
+const Cast = require('../models/Cast')
 
 exports.list = async (req, res) => {
     try {
@@ -24,9 +25,21 @@ exports.get = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        const {title, year, duration, gender} = req.body
+        const {title, year, duration, gender, movieCast} = req.body
 
         const movie = await Movie.create({title, year, duration, gender})
+
+        await Promise.all(movieCast.map(async cast => {
+            
+            const movieCast = new Cast({...cast})
+
+            await movieCast.save()
+
+            movie.movieCast.push(movieCast)
+            
+        }))
+
+        await movie.save()
 
         return res.json({movie})
     } catch (error) {

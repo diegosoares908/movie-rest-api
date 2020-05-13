@@ -15,7 +15,11 @@ const MovieSchema = new mongoose.Schema({
     },
     gender:{
         type: String
-    }
+    },
+    movieCast: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Cast'
+    }]
 })
 
 const Movie = mongoose.model('Movie', MovieSchema)
